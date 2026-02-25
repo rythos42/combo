@@ -20,6 +20,7 @@ import { useRouter } from 'next/navigation';
 
 export default function InputTable() {
     const [inputRows, setInputRows] = useState([]);
+    const [focus, setFocus] = useState(false);
     const router = useRouter();
     const lastFieldRef = useRef(null);
 
@@ -151,6 +152,10 @@ export default function InputTable() {
     }, [])
 
     useEffect(() => {
+        if (!focus)
+            return;
+
+        setFocus(false);
         const lastField = lastFieldRef.current?.querySelector('input');
         lastField?.focus();
         lastField?.select();
@@ -158,6 +163,7 @@ export default function InputTable() {
 
     function addInputRow() {
         const newInputRows = [...inputRows, { code: 'ACCO', count: 1 }];
+        setFocus(true);
         setInputRows(newInputRows);
         sessionStorage.setItem('data', newInputRows);
     }

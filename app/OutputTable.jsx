@@ -46,6 +46,7 @@ export default async function OutputTable({ commodityCombo }) {
         );
 
         const tableEntries = [];
+        let maxProfit = 0;
         Object.entries(terminals).forEach((terminal) => {
             const [terminalName, terminalCommodities] = terminal;
             let profit = 0;
@@ -58,6 +59,8 @@ export default async function OutputTable({ commodityCombo }) {
                 commodityEntries.push(c);
             });
 
+            maxProfit = Math.max(maxProfit, profit);
+
             tableEntries.push({
                 name: terminalName,
                 profit: profit,
@@ -65,6 +68,7 @@ export default async function OutputTable({ commodityCombo }) {
             });
         });
 
+        tableEntries.forEach(entry => entry.profitDifference = entry.profit - maxProfit);
         tableEntries.sort((entry1, entry2) => entry2.profit - entry1.profit);
 
         return (
@@ -100,6 +104,7 @@ export default async function OutputTable({ commodityCombo }) {
                                     <TableCell key={commodity.code}>{commodity.code}</TableCell>
                                 ))}
                                 <TableCell>Profit</TableCell>
+                                <TableCell>Diff</TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
@@ -110,6 +115,7 @@ export default async function OutputTable({ commodityCombo }) {
                                         <TableCell key={commodity.code}>{entry.commodities.find(c => c.commodity_code === commodity.code)?.price_sell || 'N/A'}</TableCell>
                                     ))}
                                     <TableCell>{entry.profit}</TableCell>
+                                    <TableCell>{entry.profitDifference}</TableCell>
                                 </TableRow>
                             ))
                                 : <TableRow>
