@@ -1,3 +1,9 @@
+Todo
+- put into GitHub
+
+- use API to generate list of commodities for InputTable.jsx, rather than hard-coding
+- ability to sort output table
+
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
 ## Getting Started
