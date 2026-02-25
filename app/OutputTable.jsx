@@ -6,7 +6,8 @@ import {
     TableRow,
     TableContainer,
     Paper,
-    Button
+    Button,
+    Divider
 } from "@mui/material";
 
 export default async function OutputTable({ commodityCombo }) {
@@ -69,6 +70,27 @@ export default async function OutputTable({ commodityCombo }) {
         return (
             <Paper sx={{ width: 700, margin: 'auto', marginTop: 5, padding: 2, display: 'flex', alignItems: 'flex-end', flexDirection: 'column', justifyContent: 'flex-end' }}>
                 <Button href="/">Back</Button>
+                <TableContainer>
+                    <Table>
+                        <TableHead>
+                            <TableRow>
+                                <TableCell>Commodity</TableCell>
+                                <TableCell>Count</TableCell>
+                            </TableRow>
+                        </TableHead>
+                        <TableBody>
+                            {commodityCombo.map(commodity => (
+                                <TableRow key={commodity.code}>
+                                    <TableCell>{commodity.code}</TableCell>
+                                    <TableCell>{commodity.count}</TableCell>
+                                </TableRow>
+                            ))}
+                        </TableBody>
+                    </Table>
+                </TableContainer>
+                <div style={{ width: '100%', marginTop: 20 }} />
+                <Divider />
+                <div style={{ width: '100%', marginTop: 20 }} />
                 <TableContainer>
                     <Table>
                         <TableHead>

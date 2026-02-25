@@ -213,7 +213,8 @@ export default function InputTable() {
                                 <TableCell>
                                     <IconButton
                                         aria-label="delete"
-                                        onClick={() => handleDeleteRow(index)}>
+                                        onClick={() => handleDeleteRow(index)}
+                                        tabIndex={-1}>
                                         <DeleteIcon />
                                     </IconButton>
                                 </TableCell>
