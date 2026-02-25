@@ -1,7 +1,6 @@
 ## Todo
 - use API to generate list of commodities for InputTable.jsx, rather than hard-coding
 - ability to sort output table
-- set last autocomplete as focus after adding new row
 
 # Boilerplate
 

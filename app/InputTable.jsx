@@ -15,12 +15,13 @@ import {
     Autocomplete
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 
 export default function InputTable() {
     const [inputRows, setInputRows] = useState([]);
     const router = useRouter();
+    const lastFieldRef = useRef(null);
 
     const commodityCodeOptions = [
         'ACCO',
@@ -149,6 +150,12 @@ export default function InputTable() {
         }
     }, [])
 
+    useEffect(() => {
+        const lastField = lastFieldRef.current?.querySelector('input');
+        lastField?.focus();
+        lastField?.select();
+    }, [inputRows])
+
     function addInputRow() {
         const newInputRows = [...inputRows, { code: 'ACCO', count: 1 }];
         setInputRows(newInputRows);
@@ -199,7 +206,9 @@ export default function InputTable() {
                                         clearOnBlur={true}
                                         options={commodityCodeOptions}
                                         fullWidth
-                                        renderInput={(params) => <TextField {...params} />}
+                                        renderInput={(params) =>
+                                            <TextField {...params}
+                                                ref={index === inputRows.length - 1 ? lastFieldRef : null} />}
                                         onChange={(e, newValue) => handleInputChange(index, 'code', newValue)}
                                         value={row.code}
                                     />
