@@ -10,6 +10,11 @@ const roboto = Roboto({
   variable: '--font-roboto',
 });
 
+export const metadata = {
+  title: 'Commodity Combo',
+  description: 'Find the most profitable combinations of commodities in Star Citizen for trading using UEXCorp.space for data.',
+}
+
 export default function RootLayout(props) {
   return (
     <html lang="en" className={roboto.variable}>
