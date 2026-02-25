@@ -136,14 +136,23 @@ export default function InputTable() {
     ];
 
     useEffect(() => {
-        const storedSelectedOption = JSON.parse(sessionStorage.getItem('data') || '[]');
-        setInputRows(storedSelectedOption)
+        const sessionDataString = sessionStorage.getItem('data')
+        if (!sessionDataString)
+            return;
+
+        try {
+            const sessionData = JSON.parse(sessionDataString);
+            setInputRows(sessionData);
+        } catch (error) {
+            setInputRows([]);
+            sessionStorage.setItem('data', [])
+        }
     }, [])
 
     function addInputRow() {
         const newInputRows = [...inputRows, { code: 'ACCO', count: 1 }];
         setInputRows(newInputRows);
-        sessionStorage.setItem('data', newInputRows)
+        sessionStorage.setItem('data', newInputRows);
     }
 
     function handleInputChange(index, field, value) {
