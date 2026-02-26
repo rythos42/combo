@@ -1,7 +1,7 @@
 ## Todo
 - use API to generate list of commodities for InputTable.jsx, rather than hard-coding
 - ability to sort output table
-- tooltip with extra sales information
+- commas in output numbers
 - check mobile exp
 
 # Boilerplate

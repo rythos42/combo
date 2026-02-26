@@ -7,8 +7,10 @@ import {
     TableContainer,
     Paper,
     Button,
-    Divider
+    Tooltip
 } from "@mui/material";
+
+import CommodityOutputCell from "./CommodityOutputCell";
 
 export default async function OutputTable({ commodityCombo }) {
     async function getCommodities(code) {
@@ -54,16 +56,23 @@ export default async function OutputTable({ commodityCombo }) {
             if (terminalCommodities.length <= 0 || terminalCommodities.length < commodityCombo.length)
                 return;
 
+            let profitTooltip = '';
+            let prefix = '';
             terminalCommodities.forEach(c => {
-                profit += c.price_sell * commodityCombo.find(combo => combo.code === c.commodity_code).count;
+                const count = commodityCombo.find(combo => combo.code === c.commodity_code)?.count || 0;
+                profit += c.price_sell * count;
+                profitTooltip += `${prefix} ${c.price_sell} * ${count} `;
+                prefix = '+';
                 commodityEntries.push(c);
             });
 
             maxProfit = Math.max(maxProfit, profit);
+            profitTooltip += `= ${profit}`;
 
             tableEntries.push({
                 name: terminalName,
                 profit: profit,
+                profitTooltip: profitTooltip,
                 commodities: commodityEntries
             });
         });
@@ -91,10 +100,14 @@ export default async function OutputTable({ commodityCombo }) {
                                 <TableRow key={entry.name}>
                                     <TableCell>{entry.name}</TableCell>
                                     {commodityCombo.map(commodity => (
-                                        <TableCell key={commodity.code}>{entry.commodities.find(c => c.commodity_code === commodity.code)?.price_sell || 'N/A'}</TableCell>
+                                        <CommodityOutputCell key={commodity.code} commodity={commodity} commodities={entry.commodities} />
                                     ))}
-                                    <TableCell>{entry.profit}</TableCell>
-                                    <TableCell>{entry.profitDifference}</TableCell>
+                                    <Tooltip title={entry.profitTooltip}>
+                                        <TableCell>{entry.profit}</TableCell>
+                                    </Tooltip>
+                                    <Tooltip title={`${entry.profitDifference + entry.profit} - ${entry.profit} = ${entry.profitDifference}`}>
+                                        <TableCell>{entry.profitDifference}</TableCell>
+                                    </Tooltip>
                                 </TableRow>
                             ))
                                 : <TableRow>
