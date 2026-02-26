@@ -19,6 +19,7 @@ export default function CommodityOutputCell({ commodity, commodities }) {
     const [popoverOpen, setPopoverOpen] = useState(false);
     const [popoverContent, setPopoverContent] = useState('Nothing');
     const [anchorEl, setAnchorEl] = useState(null);
+    const format = new Intl.NumberFormat('en-US');
 
     const apiCommodity = commodities.find(c => c.commodity_code === commodity.code);
 
@@ -29,15 +30,15 @@ export default function CommodityOutputCell({ commodity, commodities }) {
                     <Table>
                         <TableBody>
                             <TableRow><TableCell><Typography>Terminal</Typography></TableCell><TableCell>{apiCommodity.terminal_name}</TableCell></TableRow>
-                            <TableRow><TableCell><Typography>Sell Price</Typography></TableCell><TableCell>{apiCommodity.price_sell}</TableCell></TableRow>
-                            <TableRow><TableCell><Typography>Average Monthly Sell Price</Typography></TableCell><TableCell>{apiCommodity.price_sell_avg_month}</TableCell></TableRow>
-                            <TableRow><TableCell><Typography>Average Weekly Sell Price</Typography></TableCell><TableCell>{apiCommodity.price_sell_avg_week}</TableCell></TableRow>
-                            <TableRow><TableCell><Typography>Maximum Sell Price</Typography></TableCell><TableCell>{apiCommodity.price_sell_max}</TableCell></TableRow>
-                            <TableRow><TableCell><Typography>Maximum Monthly Sell Price</Typography></TableCell><TableCell>{apiCommodity.price_sell_max_month}</TableCell></TableRow>
-                            <TableRow><TableCell><Typography>Maximum Weekly Sell Price</Typography></TableCell><TableCell>{apiCommodity.price_sell_max_week}</TableCell></TableRow>
-                            <TableRow><TableCell><Typography>Minimum Sell Price</Typography></TableCell><TableCell>{apiCommodity.price_sell_min}</TableCell></TableRow>
-                            <TableRow><TableCell><Typography>Minimum Monthly Sell Price</Typography></TableCell><TableCell>{apiCommodity.price_sell_min_month}</TableCell></TableRow>
-                            <TableRow><TableCell><Typography>Minimum Weekly Sell Price</Typography></TableCell><TableCell>{apiCommodity.price_sell_min_week}</TableCell></TableRow>
+                            <TableRow><TableCell><Typography>Sell Price</Typography></TableCell><TableCell>{format.format(apiCommodity.price_sell)}</TableCell></TableRow>
+                            <TableRow><TableCell><Typography>Average Monthly Sell Price</Typography></TableCell><TableCell>{format.format(apiCommodity.price_sell_avg_month)}</TableCell></TableRow>
+                            <TableRow><TableCell><Typography>Average Weekly Sell Price</Typography></TableCell><TableCell>{format.format(apiCommodity.price_sell_avg_week)}</TableCell></TableRow>
+                            <TableRow><TableCell><Typography>Maximum Sell Price</Typography></TableCell><TableCell>{format.format(apiCommodity.price_sell_max)}</TableCell></TableRow>
+                            <TableRow><TableCell><Typography>Maximum Monthly Sell Price</Typography></TableCell><TableCell>{format.format(apiCommodity.price_sell_max_month)}</TableCell></TableRow>
+                            <TableRow><TableCell><Typography>Maximum Weekly Sell Price</Typography></TableCell><TableCell>{format.format(apiCommodity.price_sell_max_week)}</TableCell></TableRow>
+                            <TableRow><TableCell><Typography>Minimum Sell Price</Typography></TableCell><TableCell>{format.format(apiCommodity.price_sell_min)}</TableCell></TableRow>
+                            <TableRow><TableCell><Typography>Minimum Monthly Sell Price</Typography></TableCell><TableCell>{format.format(apiCommodity.price_sell_min_month)}</TableCell></TableRow>
+                            <TableRow><TableCell><Typography>Minimum Weekly Sell Price</Typography></TableCell><TableCell>{format.format(apiCommodity.price_sell_min_week)}</TableCell></TableRow>
                         </TableBody>
                     </Table>
                     <Button onClick={() => setPopoverOpen(false)}>Close</Button>
@@ -48,7 +49,7 @@ export default function CommodityOutputCell({ commodity, commodities }) {
 
     return (
         <TableCell key={commodity.code}>
-            {apiCommodity?.price_sell || 'N/A'}
+            {format.format(apiCommodity?.price_sell || 0)}
             <Tooltip title="More info">
                 <IconButton size="small" onClick={(event) => {
                     setAnchorEl(event.currentTarget);

@@ -33,6 +33,7 @@ export default async function OutputTable({ commodityCombo }) {
     }
 
     try {
+        const format = new Intl.NumberFormat('en-US');
         const promises = [];
         commodityCombo.forEach(function (commodity) {
             promises.push(getCommodities(commodity.code));
@@ -61,13 +62,13 @@ export default async function OutputTable({ commodityCombo }) {
             terminalCommodities.forEach(c => {
                 const count = commodityCombo.find(combo => combo.code === c.commodity_code)?.count || 0;
                 profit += c.price_sell * count;
-                profitTooltip += `${prefix} ${c.price_sell} * ${count} `;
+                profitTooltip += `${prefix} ${format.format(c.price_sell)} * ${count} `;
                 prefix = '+';
                 commodityEntries.push(c);
             });
 
             maxProfit = Math.max(maxProfit, profit);
-            profitTooltip += `= ${profit}`;
+            profitTooltip += `= ${format.format(profit)}`;
 
             tableEntries.push({
                 name: terminalName,
@@ -103,10 +104,10 @@ export default async function OutputTable({ commodityCombo }) {
                                         <CommodityOutputCell key={commodity.code} commodity={commodity} commodities={entry.commodities} />
                                     ))}
                                     <Tooltip title={entry.profitTooltip}>
-                                        <TableCell>{entry.profit}</TableCell>
+                                        <TableCell>{format.format(entry.profit)}</TableCell>
                                     </Tooltip>
-                                    <Tooltip title={`${entry.profitDifference + entry.profit} - ${entry.profit} = ${entry.profitDifference}`}>
-                                        <TableCell>{entry.profitDifference}</TableCell>
+                                    <Tooltip title={`${format.format(entry.profit + entry.profitDifference)} - ${format.format(entry.profit)} = ${format.format(entry.profitDifference)}`}>
+                                        <TableCell>{format.format(entry.profitDifference)}</TableCell>
                                     </Tooltip>
                                 </TableRow>
                             ))
