@@ -162,15 +162,27 @@ export default function InputTable() {
     }, [inputRows])
 
     function addInputRow() {
-        const newInputRows = [...inputRows, { code: 'ACCO', count: 1 }];
+        const newInputRows = [...inputRows, { code: 'ACCO', count: '', displayCount: '' }];
         setFocus(true);
         setInputRows(newInputRows);
         sessionStorage.setItem('data', newInputRows);
     }
 
-    function handleInputChange(index, field, value) {
+    function handleCodeChange(index, value) {
         const newInputRows = [...inputRows];
-        newInputRows[index][field] = value;
+        newInputRows[index].code = value;
+        setInputRows(newInputRows);
+        sessionStorage.setItem('data', JSON.stringify(newInputRows));
+    }
+
+    function handleCountChange(index, value) {
+        const newInputRows = [...inputRows];
+
+        const values = value.split(',').map(v => v == '' ? 0 : parseInt(v.trim()));
+        const count = values.length > 1 ? values.reduce((a, b) => a + b, 0) : value;
+
+        newInputRows[index].count = count;
+        newInputRows[index].displayCount = value;
         setInputRows(newInputRows);
         sessionStorage.setItem('data', JSON.stringify(newInputRows));
     }
@@ -215,15 +227,16 @@ export default function InputTable() {
                                         renderInput={(params) =>
                                             <TextField {...params}
                                                 ref={index === inputRows.length - 1 ? lastFieldRef : null} />}
-                                        onChange={(e, newValue) => handleInputChange(index, 'code', newValue)}
+                                        onChange={(_, newValue) => handleCodeChange(index, newValue)}
                                         value={row.code}
                                     />
                                 </TableCell>
                                 <TableCell>
                                     <TextField
                                         label="Count"
-                                        value={row.count}
-                                        onChange={(e) => handleInputChange(index, 'count', e.target.value)} />
+                                        value={row.displayCount}
+                                        placeholder='1 OR (1, 2, 3)'
+                                        onChange={(e) => handleCountChange(index, e.target.value)} />
                                 </TableCell>
                                 <TableCell>
                                     <IconButton

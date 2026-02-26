@@ -2,7 +2,6 @@
 - use API to generate list of commodities for InputTable.jsx, rather than hard-coding
 - ability to sort output table
 - tooltip with extra sales information
-- ability to enter multiple numbers into input and sum them
 - check mobile exp
 
 # Boilerplate
