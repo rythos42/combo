@@ -1,7 +1,9 @@
 ## Todo
 - use API to generate list of commodities for InputTable.jsx, rather than hard-coding
 - ability to sort output table
-- bug where table won't show any data if one entry has no data? ("ACCO" has an issue)
+- tooltip with extra sales information
+- ability to enter multiple numbers into input and sum them
+- check mobile exp
 
 # Boilerplate
 

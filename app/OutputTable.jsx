@@ -72,36 +72,15 @@ export default async function OutputTable({ commodityCombo }) {
         tableEntries.sort((entry1, entry2) => entry2.profit - entry1.profit);
 
         return (
-            <Paper sx={{ width: 700, margin: 'auto', marginTop: 5, padding: 2, display: 'flex', alignItems: 'flex-end', flexDirection: 'column', justifyContent: 'flex-end' }}>
+            <Paper sx={{ width: 900, margin: 'auto', marginTop: 5, padding: 2, display: 'flex', alignItems: 'flex-end', flexDirection: 'column', justifyContent: 'flex-end' }}>
                 <Button href="/">Back</Button>
-                <TableContainer>
-                    <Table>
-                        <TableHead>
-                            <TableRow>
-                                <TableCell>Commodity</TableCell>
-                                <TableCell>Count</TableCell>
-                            </TableRow>
-                        </TableHead>
-                        <TableBody>
-                            {commodityCombo.map(commodity => (
-                                <TableRow key={commodity.code}>
-                                    <TableCell>{commodity.code}</TableCell>
-                                    <TableCell>{commodity.count}</TableCell>
-                                </TableRow>
-                            ))}
-                        </TableBody>
-                    </Table>
-                </TableContainer>
-                <div style={{ width: '100%', marginTop: 20 }} />
-                <Divider />
-                <div style={{ width: '100%', marginTop: 20 }} />
                 <TableContainer>
                     <Table>
                         <TableHead>
                             <TableRow>
                                 <TableCell>Terminal</TableCell>
                                 {commodityCombo.map(commodity => (
-                                    <TableCell key={commodity.code}>{commodity.code}</TableCell>
+                                    <TableCell key={commodity.code}>{commodity.code} ({commodity.count} scu)</TableCell>
                                 ))}
                                 <TableCell>Profit</TableCell>
                                 <TableCell>Diff</TableCell>
