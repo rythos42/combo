@@ -3,6 +3,8 @@
 - ability to sort output table
 - check mobile exp
 - use browser locale instead of hard-coding en-US
+- mark an OutputTable cell if price is more than 5% off the highest price (mark where that highest price is)
+- make table able to better support 6 entries, looks weird
 
 # Boilerplate
 

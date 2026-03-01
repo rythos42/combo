@@ -10,6 +10,7 @@ import {
     Tooltip
 } from "@mui/material";
 
+import CommodityHeaderCell from "./CommodityHeaderCell";
 import CommodityOutputCell from "./CommodityOutputCell";
 
 export default async function OutputTable({ commodityCombo }) {
@@ -44,9 +45,25 @@ export default async function OutputTable({ commodityCombo }) {
         const terminals = Object.groupBy(
             commodityList
                 .flat()
-                .filter(c => c.price_sell > 0),
-            c => c.terminal_name
+                .filter(commodity => commodity.price_sell > 0),
+            commodity => commodity.terminal_name
         );
+
+        const maxCommodityPrices = {};
+        commodityCombo.forEach(commodity => {
+            let maxPriceCommodity = maxCommodityPrices[commodity.code];
+            if (!maxPriceCommodity) {
+                maxPriceCommodity = { commodity_code: commodity.code, price_sell: 0 };
+                maxCommodityPrices[commodity.code] = maxPriceCommodity;
+            }
+
+            Object.values(terminals).flat().forEach(terminal => {
+                if (terminal.commodity_code === commodity.code && terminal.price_sell > maxPriceCommodity.price_sell) {
+                    maxPriceCommodity = terminal;
+                }
+            });
+            maxCommodityPrices[commodity.code] = maxPriceCommodity;
+        });
 
         const tableEntries = [];
         let maxProfit = 0;
@@ -59,12 +76,12 @@ export default async function OutputTable({ commodityCombo }) {
 
             let profitTooltip = '';
             let prefix = '';
-            terminalCommodities.forEach(c => {
-                const count = commodityCombo.find(combo => combo.code === c.commodity_code)?.count || 0;
-                profit += c.price_sell * count;
-                profitTooltip += `${prefix} ${format.format(c.price_sell)} * ${count} `;
+            terminalCommodities.forEach(commodity => {
+                const count = commodityCombo.find(combo => combo.code === commodity.commodity_code)?.count || 0;
+                profit += commodity.price_sell * count;
+                profitTooltip += `${prefix} ${format.format(commodity.price_sell)} * ${count} `;
                 prefix = '+';
-                commodityEntries.push(c);
+                commodityEntries.push(commodity);
             });
 
             maxProfit = Math.max(maxProfit, profit);
@@ -90,7 +107,7 @@ export default async function OutputTable({ commodityCombo }) {
                             <TableRow>
                                 <TableCell>Terminal</TableCell>
                                 {commodityCombo.map(commodity => (
-                                    <TableCell key={commodity.code}>{commodity.code} ({commodity.count} scu)</TableCell>
+                                    <CommodityHeaderCell key={commodity.code} commodity={commodity} apiCommodity={maxCommodityPrices[commodity.code]} />
                                 ))}
                                 <TableCell>Profit</TableCell>
                                 <TableCell>Diff</TableCell>

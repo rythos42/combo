@@ -1,45 +1,35 @@
-'use client';
+'use client'
 
 import {
     TableCell,
     IconButton,
     Popover,
     Typography,
-    Tooltip,
     Table,
     TableBody,
     TableRow,
     TableContainer,
-    Button
+    Button,
+    Tooltip,
 } from "@mui/material";
 import InfoIcon from '@mui/icons-material/InfoOutline';
 import { useState } from 'react';
 
-export default function CommodityOutputCell({ commodity, commodities }) {
+export default function CommodityHeaderCell({ commodity, apiCommodity }) {
     const [popoverOpen, setPopoverOpen] = useState(false);
     const [popoverContent, setPopoverContent] = useState('Nothing');
     const [anchorEl, setAnchorEl] = useState(null);
     const format = new Intl.NumberFormat('en-US');
 
-    const apiCommodity = commodities.find(c => c.commodity_code === commodity.code);
-
     function getPopoverContent(apiCommodity) {
         return (
             <>
-                <Typography variant="h6">{apiCommodity.commodity_name} ({apiCommodity.commodity_code})</Typography>
+                <Typography variant="h6">Max Price for {apiCommodity.commodity_name} ({apiCommodity.commodity_code})</Typography>
                 <TableContainer sx={{ display: 'flex', alignItems: 'flex-end', flexDirection: 'column', justifyContent: 'flex-end' }}>
                     <Table>
                         <TableBody>
                             <TableRow><TableCell>Terminal</TableCell><TableCell>{apiCommodity.terminal_name}</TableCell></TableRow>
                             <TableRow><TableCell>Sell Price</TableCell><TableCell>{format.format(apiCommodity.price_sell)}</TableCell></TableRow>
-                            <TableRow><TableCell>Average Monthly Sell Price</TableCell><TableCell>{format.format(apiCommodity.price_sell_avg_month)}</TableCell></TableRow>
-                            <TableRow><TableCell>Average Weekly Sell Price</TableCell><TableCell>{format.format(apiCommodity.price_sell_avg_week)}</TableCell></TableRow>
-                            <TableRow><TableCell>Maximum Sell Price</TableCell><TableCell>{format.format(apiCommodity.price_sell_max)}</TableCell></TableRow>
-                            <TableRow><TableCell>Maximum Monthly Sell Price</TableCell><TableCell>{format.format(apiCommodity.price_sell_max_month)}</TableCell></TableRow>
-                            <TableRow><TableCell>Maximum Weekly Sell Price</TableCell><TableCell>{format.format(apiCommodity.price_sell_max_week)}</TableCell></TableRow>
-                            <TableRow><TableCell>Minimum Sell Price</TableCell><TableCell>{format.format(apiCommodity.price_sell_min)}</TableCell></TableRow>
-                            <TableRow><TableCell>Minimum Monthly Sell Price</TableCell><TableCell>{format.format(apiCommodity.price_sell_min_month)}</TableCell></TableRow>
-                            <TableRow><TableCell>Minimum Weekly Sell Price</TableCell><TableCell>{format.format(apiCommodity.price_sell_min_week)}</TableCell></TableRow>
                         </TableBody>
                     </Table>
                     <Button onClick={() => setPopoverOpen(false)}>Close</Button>
@@ -50,7 +40,8 @@ export default function CommodityOutputCell({ commodity, commodities }) {
 
     return (
         <TableCell key={commodity.code}>
-            {format.format(apiCommodity?.price_sell || 0)}
+            {commodity.code} ({commodity.count} scu)
+
             <Tooltip title="More info">
                 <IconButton size="small" onClick={(event) => {
                     setAnchorEl(event.currentTarget);
