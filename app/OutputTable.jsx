@@ -99,7 +99,7 @@ export default async function OutputTable({ commodityCombo }) {
         tableEntries.sort((entry1, entry2) => entry2.profit - entry1.profit);
 
         return (
-            <Paper sx={{ width: 900, margin: 'auto', marginTop: 5, padding: 2, display: 'flex', alignItems: 'flex-end', flexDirection: 'column', justifyContent: 'flex-end' }}>
+            <Paper sx={{ maxWidth: 1200, margin: 'auto', marginTop: 5, padding: 2, display: 'flex', alignItems: 'flex-end', flexDirection: 'column', justifyContent: 'flex-end' }}>
                 <Button href="/">Back</Button>
                 <TableContainer>
                     <Table>
@@ -118,7 +118,7 @@ export default async function OutputTable({ commodityCombo }) {
                                 <TableRow key={entry.name}>
                                     <TableCell>{entry.name}</TableCell>
                                     {commodityCombo.map(commodity => (
-                                        <CommodityOutputCell key={commodity.code} commodity={commodity} commodities={entry.commodities} />
+                                        <CommodityOutputCell key={commodity.code} commodity={commodity} commodities={entry.commodities} maxPriceCommodity={maxCommodityPrices[commodity.code]} />
                                     ))}
                                     <Tooltip title={entry.profitTooltip}>
                                         <TableCell>{format.format(entry.profit)}</TableCell>

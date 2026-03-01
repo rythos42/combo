@@ -15,7 +15,7 @@ import {
 import InfoIcon from '@mui/icons-material/InfoOutline';
 import { useState } from 'react';
 
-export default function CommodityOutputCell({ commodity, commodities }) {
+export default function CommodityOutputCell({ commodity, commodities, maxPriceCommodity }) {
     const [popoverOpen, setPopoverOpen] = useState(false);
     const [popoverContent, setPopoverContent] = useState('Nothing');
     const [anchorEl, setAnchorEl] = useState(null);
@@ -30,7 +30,11 @@ export default function CommodityOutputCell({ commodity, commodities }) {
                 <TableContainer sx={{ display: 'flex', alignItems: 'flex-end', flexDirection: 'column', justifyContent: 'flex-end' }}>
                     <Table>
                         <TableBody>
-                            <TableRow><TableCell>Terminal</TableCell><TableCell>{apiCommodity.terminal_name}</TableCell></TableRow>
+                            <TableRow><TableCell>Max Price Terminal</TableCell><TableCell>{maxPriceCommodity.terminal_name}</TableCell></TableRow>
+                            <TableRow><TableCell>Max Price</TableCell><TableCell>{format.format(maxPriceCommodity.price_sell)}</TableCell></TableRow>
+                            <TableRow><TableCell>Profit Diff if Sold Here</TableCell><TableCell>{format.format((maxPriceCommodity.price_sell - apiCommodity.price_sell) * commodity.count)}</TableCell></TableRow>
+                            <TableRow><TableCell></TableCell><TableCell></TableCell></TableRow>
+                            <TableRow><TableCell>This Terminal</TableCell><TableCell>{apiCommodity.terminal_name}</TableCell></TableRow>
                             <TableRow><TableCell>Sell Price</TableCell><TableCell>{format.format(apiCommodity.price_sell)}</TableCell></TableRow>
                             <TableRow><TableCell>Average Monthly Sell Price</TableCell><TableCell>{format.format(apiCommodity.price_sell_avg_month)}</TableCell></TableRow>
                             <TableRow><TableCell>Average Weekly Sell Price</TableCell><TableCell>{format.format(apiCommodity.price_sell_avg_week)}</TableCell></TableRow>
@@ -48,9 +52,13 @@ export default function CommodityOutputCell({ commodity, commodities }) {
         );
     }
 
+    const ratio = apiCommodity.price_sell / maxPriceCommodity.price_sell;
+    console.log(ratio);
+
     return (
-        <TableCell key={commodity.code}>
+        <TableCell key={commodity.code} sx={{ bgcolor: ratio < 0.85 ? 'indianred' : ratio < 0.95 ? 'lightpink' : 'white' }}>
             {format.format(apiCommodity?.price_sell || 0)}
+
             <Tooltip title="More info">
                 <IconButton size="small" onClick={(event) => {
                     setAnchorEl(event.currentTarget);
