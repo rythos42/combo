@@ -223,7 +223,7 @@ export default function InputTable() {
     }
 
     return (
-        <Paper sx={{ maxWidth: 600, margin: 'auto', marginTop: 5, padding: 2 }}>
+        <Paper sx={{ maxWidth: 650, margin: 'auto', marginTop: 5, padding: 2 }}>
             <Typography variant="h4" gutterBottom>
                 Commodity Combos
             </Typography>
