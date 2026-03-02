@@ -13,7 +13,7 @@ import {
 import CommodityHeaderCell from "./CommodityHeaderCell";
 import CommodityOutputCell from "./CommodityOutputCell";
 
-export default async function OutputTable({ commodityCombo }) {
+export default async function OutputTable({ inputData }) {
     async function getCommodities(code) {
         const fetchResult = await fetch(`https://api.uexcorp.uk/2.0/commodities_prices?commodity_code=${encodeURI(code)}`, {
             method: 'GET',
@@ -36,7 +36,7 @@ export default async function OutputTable({ commodityCombo }) {
     try {
         const format = new Intl.NumberFormat('en-US');
         const promises = [];
-        commodityCombo.forEach(function (commodity) {
+        inputData.rows.forEach(function (commodity) {
             promises.push(getCommodities(commodity.code));
         });
 
@@ -50,7 +50,7 @@ export default async function OutputTable({ commodityCombo }) {
         );
 
         const maxCommodityPrices = {};
-        commodityCombo.forEach(commodity => {
+        inputData.rows.forEach(commodity => {
             let maxPriceCommodity = maxCommodityPrices[commodity.code];
             if (!maxPriceCommodity) {
                 maxPriceCommodity = { commodity_code: commodity.code, price_sell: 0 };
@@ -71,13 +71,13 @@ export default async function OutputTable({ commodityCombo }) {
             const [terminalName, terminalCommodities] = terminal;
             let profit = 0;
             const commodityEntries = [];
-            if (terminalCommodities.length <= 0 || terminalCommodities.length < commodityCombo.length)
+            if (terminalCommodities.length <= 0 || terminalCommodities.length < inputData.rows.length)
                 return;
 
             let profitTooltip = '';
             let prefix = '';
             terminalCommodities.forEach(commodity => {
-                const count = commodityCombo.find(combo => combo.code === commodity.commodity_code)?.count || 0;
+                const count = inputData.rows.find(combo => combo.code === commodity.commodity_code)?.count || 0;
                 profit += commodity.price_sell * count;
                 profitTooltip += `${prefix} ${format.format(commodity.price_sell)} * ${count} `;
                 prefix = '+';
@@ -106,7 +106,7 @@ export default async function OutputTable({ commodityCombo }) {
                         <TableHead>
                             <TableRow>
                                 <TableCell>Terminal</TableCell>
-                                {commodityCombo.map(commodity => (
+                                {inputData.rows.map(commodity => (
                                     <CommodityHeaderCell key={commodity.code} commodity={commodity} apiCommodity={maxCommodityPrices[commodity.code]} />
                                 ))}
                                 <TableCell>Profit</TableCell>
@@ -117,8 +117,14 @@ export default async function OutputTable({ commodityCombo }) {
                             {tableEntries && tableEntries.length !== 0 ? tableEntries.map(entry => (
                                 <TableRow key={entry.name}>
                                     <TableCell>{entry.name}</TableCell>
-                                    {commodityCombo.map(commodity => (
-                                        <CommodityOutputCell key={commodity.code} commodity={commodity} commodities={entry.commodities} maxPriceCommodity={maxCommodityPrices[commodity.code]} />
+                                    {inputData.rows.map(commodity => (
+                                        <CommodityOutputCell
+                                            key={commodity.code}
+                                            commodity={commodity}
+                                            commodities={entry.commodities}
+                                            maxPriceCommodity={maxCommodityPrices[commodity.code]}
+                                            acceptableProfitLossPerScu={inputData.acceptableProfitLossPerScu}
+                                        />
                                     ))}
                                     <Tooltip title={entry.profitTooltip}>
                                         <TableCell>{format.format(entry.profit)}</TableCell>
@@ -129,7 +135,7 @@ export default async function OutputTable({ commodityCombo }) {
                                 </TableRow>
                             ))
                                 : <TableRow>
-                                    <TableCell colSpan={commodityCombo.length + 2} align="center">No data available.</TableCell>
+                                    <TableCell colSpan={inputData.rows.length + 2} align="center">No data available.</TableCell>
                                 </TableRow>}
                         </TableBody>
                     </Table>

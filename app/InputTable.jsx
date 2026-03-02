@@ -12,14 +12,20 @@ import {
     Paper,
     TableHead,
     Typography,
-    Autocomplete
+    Autocomplete,
+    Box
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 
 export default function InputTable() {
-    const [inputRows, setInputRows] = useState([]);
+    const emptySessionData = {
+        rows: [],
+        acceptableProfitLossPerScu: 750
+    };
+
+    const [sessionData, setSessionData] = useState(emptySessionData);
     const [focus, setFocus] = useState(false);
     const router = useRouter();
     const lastFieldRef = useRef(null);
@@ -143,11 +149,18 @@ export default function InputTable() {
             return;
 
         try {
-            const sessionData = JSON.parse(sessionDataString);
-            setInputRows(sessionData);
+            let newSessionData = JSON.parse(sessionDataString);
+            if (Array.isArray(newSessionData)) {    // migrate from old data format
+                newSessionData = {
+                    ...emptySessionData,
+                    rows: newSessionData
+                };
+            }
+
+            setSessionData(newSessionData);
         } catch (error) {
-            setInputRows([]);
-            sessionStorage.setItem('data', [])
+            setSessionData(emptySessionData);
+            sessionStorage.setItem('data', JSON.stringify(emptySessionData));
         }
     }, [])
 
@@ -159,51 +172,62 @@ export default function InputTable() {
         const lastField = lastFieldRef.current?.querySelector('input');
         lastField?.focus();
         lastField?.select();
-    }, [inputRows])
+    }, [sessionData.rows])
 
     function addInputRow() {
-        const newInputRows = [...inputRows, { code: 'ACCO', count: '', displayCount: '' }];
+        const newRows = [...sessionData.rows, { code: 'ACCO', count: '', displayCount: '' }];
         setFocus(true);
-        setInputRows(newInputRows);
-        sessionStorage.setItem('data', newInputRows);
+        const newData = { ...sessionData, rows: newRows };
+        setSessionData(newData);
+        sessionStorage.setItem('data', JSON.stringify(newData));
     }
 
     function handleCodeChange(index, value) {
-        const newInputRows = [...inputRows];
-        newInputRows[index].code = value;
-        setInputRows(newInputRows);
-        sessionStorage.setItem('data', JSON.stringify(newInputRows));
+        const newRows = [...sessionData.rows];
+        newRows[index].code = value;
+        const newData = { ...sessionData, rows: newRows };
+        setSessionData(newData);
+        sessionStorage.setItem('data', JSON.stringify(newData));
     }
 
     function handleCountChange(index, value) {
-        const newInputRows = [...inputRows];
+        const newRows = [...sessionData.rows];
 
         const values = value.split(',').map(v => v == '' ? 0 : parseInt(v.trim()));
         const count = values.length > 1 ? values.reduce((a, b) => a + b, 0) : value;
 
-        newInputRows[index].count = count;
-        newInputRows[index].displayCount = value;
-        setInputRows(newInputRows);
-        sessionStorage.setItem('data', JSON.stringify(newInputRows));
+        newRows[index].count = count;
+        newRows[index].displayCount = value;
+        const newData = { ...sessionData, rows: newRows };
+        setSessionData(newData);
+        sessionStorage.setItem('data', JSON.stringify(newData));
+    }
+
+    function handleProfitLossPerScuChange(event) {
+        const value = event.target.value;
+        const newData = { ...sessionData, acceptableProfitLossPerScu: value };
+        setSessionData(newData);
+        sessionStorage.setItem('data', JSON.stringify(newData));
     }
 
     function handleDeleteRow(index) {
-        const newInputRows = [...inputRows];
-        newInputRows.splice(index, 1);
-        setInputRows(newInputRows);
-        sessionStorage.setItem('data', JSON.stringify(newInputRows));
+        const newRows = [...sessionData.rows];
+        newRows.splice(index, 1);
+        const newData = { ...sessionData, rows: newRows };
+        setSessionData(newData);
+        sessionStorage.setItem('data', JSON.stringify(newData));
     }
 
     function generateTable() {
-        router.push(`/?data=${encodeURIComponent(JSON.stringify(inputRows))}`);
+        router.push(`/?data=${encodeURIComponent(JSON.stringify(sessionData))}`);
     }
 
     return (
-        <>
-            <Typography variant="h4" align="left" gutterBottom>
+        <Paper sx={{ maxWidth: 600, margin: 'auto', marginTop: 5, padding: 2 }}>
+            <Typography variant="h4" gutterBottom>
                 Commodity Combos
             </Typography>
-            <TableContainer component={Paper} sx={{ width: 650, margin: 'auto', marginTop: 5 }}>
+            <TableContainer sx={{ display: 'flex', alignItems: 'flex-end', flexDirection: 'column', justifyContent: 'flex-end' }}>
                 <Table>
                     <TableHead>
                         <TableRow>
@@ -213,7 +237,7 @@ export default function InputTable() {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {inputRows.map((row, index) => (
+                        {sessionData.rows.map((row, index) => (
                             <TableRow key={index}>
                                 <TableCell>
                                     <Autocomplete
@@ -226,7 +250,7 @@ export default function InputTable() {
                                         fullWidth
                                         renderInput={(params) =>
                                             <TextField {...params}
-                                                ref={index === inputRows.length - 1 ? lastFieldRef : null} />}
+                                                ref={index === sessionData.rows.length - 1 ? lastFieldRef : null} />}
                                         onChange={(_, newValue) => handleCodeChange(index, newValue)}
                                         value={row.code}
                                     />
@@ -248,22 +272,28 @@ export default function InputTable() {
                                 </TableCell>
                             </TableRow>
                         ))}
-                        <TableRow>
-                            <TableCell />
-                            <TableCell />
-                            <TableCell>
-                                <Button onClick={addInputRow}>Add</Button>
-                                <Button
-                                    variant="contained"
-                                    onClick={generateTable}
-                                >
-                                    Generate
-                                </Button>
-                            </TableCell>
-                        </TableRow>
                     </TableBody>
                 </Table>
-            </TableContainer >
-        </>
+                <Box sx={{ marginTop: 2 }}>
+                    <TextField
+                        label="Acceptable Profit/Loss per Scu"
+                        value={sessionData.acceptableProfitLossPerScu}
+                        onChange={handleProfitLossPerScuChange}
+                        slotProps={{
+                            htmlInput: {
+                                tabIndex: -1,
+                            },
+                        }}
+                    />
+                    <Button onClick={addInputRow}>Add</Button>
+                    <Button
+                        variant="contained"
+                        onClick={generateTable}
+                    >
+                        Generate
+                    </Button>
+                </Box>
+            </TableContainer>
+        </Paper >
     );
 }

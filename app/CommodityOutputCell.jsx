@@ -15,7 +15,7 @@ import {
 import InfoIcon from '@mui/icons-material/InfoOutline';
 import { useState } from 'react';
 
-export default function CommodityOutputCell({ commodity, commodities, maxPriceCommodity }) {
+export default function CommodityOutputCell({ commodity, commodities, maxPriceCommodity, acceptableProfitLossPerScu }) {
     const [popoverOpen, setPopoverOpen] = useState(false);
     const [popoverContent, setPopoverContent] = useState('Nothing');
     const [anchorEl, setAnchorEl] = useState(null);
@@ -52,11 +52,8 @@ export default function CommodityOutputCell({ commodity, commodities, maxPriceCo
         );
     }
 
-    const ratio = apiCommodity.price_sell / maxPriceCommodity.price_sell;
-    console.log(ratio);
-
     return (
-        <TableCell key={commodity.code} sx={{ bgcolor: ratio < 0.85 ? 'indianred' : ratio < 0.95 ? 'lightpink' : 'white' }}>
+        <TableCell key={commodity.code} sx={{ bgcolor: (maxPriceCommodity.price_sell - apiCommodity.price_sell) > acceptableProfitLossPerScu ? 'lightpink' : 'white' }}>
             {format.format(apiCommodity?.price_sell || 0)}
 
             <Tooltip title="More info">
