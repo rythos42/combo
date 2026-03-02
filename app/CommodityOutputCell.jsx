@@ -10,7 +10,10 @@ import {
     TableBody,
     TableRow,
     TableContainer,
-    Button
+    TableHead,
+    Button,
+    Box,
+    Divider
 } from "@mui/material";
 import InfoIcon from '@mui/icons-material/InfoOutline';
 import { useState } from 'react';
@@ -29,12 +32,19 @@ export default function CommodityOutputCell({ commodity, commodities, maxPriceCo
                 <Typography variant="h6">{apiCommodity.commodity_name} ({apiCommodity.commodity_code})</Typography>
                 <TableContainer sx={{ display: 'flex', alignItems: 'flex-end', flexDirection: 'column', justifyContent: 'flex-end' }}>
                     <Table>
+                        <TableHead>
+                            <TableRow><TableCell>Highest Price</TableCell><TableCell>{maxPriceCommodity.terminal_name}</TableCell></TableRow>
+                        </TableHead>
                         <TableBody>
-                            <TableRow><TableCell>Max Price Terminal</TableCell><TableCell>{maxPriceCommodity.terminal_name}</TableCell></TableRow>
-                            <TableRow><TableCell>Max Price</TableCell><TableCell>{format.format(maxPriceCommodity.price_sell)}</TableCell></TableRow>
+                            <TableRow><TableCell>Sell Price</TableCell><TableCell>{format.format(maxPriceCommodity.price_sell)}</TableCell></TableRow>
                             <TableRow><TableCell>Profit Diff if Sold Here</TableCell><TableCell>{format.format((maxPriceCommodity.price_sell - apiCommodity.price_sell) * commodity.count)}</TableCell></TableRow>
-                            <TableRow><TableCell></TableCell><TableCell></TableCell></TableRow>
-                            <TableRow><TableCell>This Terminal</TableCell><TableCell>{apiCommodity.terminal_name}</TableCell></TableRow>
+                        </TableBody>
+                    </Table>
+                    <Table sx={{ marginTop: 2 }}>
+                        <TableHead>
+                            <TableRow><TableCell>One-Station Price</TableCell><TableCell>{apiCommodity.terminal_name}</TableCell></TableRow>
+                        </TableHead>
+                        <TableBody>
                             <TableRow><TableCell>Sell Price</TableCell><TableCell>{format.format(apiCommodity.price_sell)}</TableCell></TableRow>
                             <TableRow><TableCell>Average Monthly Sell Price</TableCell><TableCell>{format.format(apiCommodity.price_sell_avg_month)}</TableCell></TableRow>
                             <TableRow><TableCell>Average Weekly Sell Price</TableCell><TableCell>{format.format(apiCommodity.price_sell_avg_week)}</TableCell></TableRow>
@@ -70,7 +80,7 @@ export default function CommodityOutputCell({ commodity, commodities, maxPriceCo
                 anchorEl={anchorEl}
                 onClose={() => setPopoverOpen(false)}
             >
-                <Typography sx={{ p: 2 }}>{popoverContent}</Typography>
+                <Box sx={{ padding: 2 }}>{popoverContent}</Box>
             </Popover>
         </TableCell>
     );

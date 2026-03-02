@@ -11,6 +11,7 @@ import {
     TableContainer,
     Button,
     Tooltip,
+    Box,
 } from "@mui/material";
 import InfoIcon from '@mui/icons-material/InfoOutline';
 import { useState } from 'react';
@@ -56,7 +57,9 @@ export default function CommodityHeaderCell({ commodity, apiCommodity }) {
                 anchorEl={anchorEl}
                 onClose={() => setPopoverOpen(false)}
             >
-                <Typography sx={{ p: 2 }}>{popoverContent}</Typography>
+                <Box sx={{ padding: 2 }}>
+                    {popoverContent}
+                </Box>
             </Popover>
         </TableCell>
     );
