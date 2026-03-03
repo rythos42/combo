@@ -1,18 +1,30 @@
-## Todo
-- use API to generate list of commodities for InputTable.jsx, rather than hard-coding
-- ability to sort output table
-- check mobile exp
-- use browser locale instead of hard-coding en-US
-- make table able to better support 6 entries, looks weird
-- consider caching data so we aren't pulling constantly
+# Combo
 
-# Boilerplate
+Combo is a web application tool for the game Star Citizen. It uses publicly generated data from https://uexcorp.space/ to determine the best single station to take a collection of cargo. Useful for lazy captains who have 6 commodities and only want to fly to one station to sell them all, it is useful in mining and when collecting cargo from salvaged ships.
 
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+You may use Combo on the Vercel Platform at https://combo-raely42.vercel.app/
 
-## Getting Started
+Add your cargo and amounts to the table. If you choose, you may adjust how much profit-loss you are ok with before generating the summary.
+![Input Table](images/InputScreen.png)
 
-First, run the development server:
+The app gathers data on all your cargo, calculates the profit for any station that will buy all of it, and then sorts the table so that the best price for you is at the top. Any commodities that would sell at a worse profit-loss than your acceptable value are marked in red. Click on the (i) to see details.
+![Output Table](images/OutputTable.png)
+
+Borase is marked as outside the acceptable profit loss, so we click on the (i) and knowing that we only have 4 units of it, the loss of 4,584 credits is fine.
+![Details that might show an acceptable profit loss](images/OkDetailsOnOutputTable.png)
+
+Bexalite is also marked as outside our acceptable loss, but here we have 34 units and so the loss is much greater overall. We can choose to take it to Gaslight station instead to gain an additional 156,366 credits if we want.
+![Details that might show an unacceptable profit loss](images/NotOkDetailsOnOutputTable.png)
+
+## Technical
+
+Combo is written in node.js using the Next.js framework for server and client side React rendering. It calls the UEX public API to gather data that has been publically crowdsourced and made available to developers.
+
+### Development
+
+You will need to create a .env file and fill in the value for UEX_KEY, which you can get by registering at https://uexcorp.space/ for an API key.
+
+You can start the development server using
 
 ```bash
 npm run dev
@@ -26,19 +38,13 @@ bun dev
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+# Technical Todo
+- use API to generate list of commodities for InputTable.jsx, rather than hard-coding
+- ability to sort output table
+- check mobile experience
+- use browser locale instead of hard-coding en-US
+- make output table able to better support 6 entries, looks weird
+- consider caching data so we aren't pulling constantly
 
-## Learn More
 
-To learn more about Next.js, take a look at the following resources:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
