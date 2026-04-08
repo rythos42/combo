@@ -107,6 +107,7 @@ export default function InputTable() {
         'OMPO',
         'ORGN',
         'OSOH',
+        'OURAT',
         'PART',
         'PFOO',
         'PICE',
