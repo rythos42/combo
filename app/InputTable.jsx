@@ -40,6 +40,7 @@ export default function InputTable() {
         'APHO',
         'ARGO',
         'ASTA',
+        'ASLAR',
         'ATLA',
         'AUDI',
         'AUTR',
